@@ -19,6 +19,7 @@ static NSString *const InvalidParameters = @"Invalid parameter's type";
         self.query = @{
                        (__bridge id)kSecClass :(__bridge id)kSecClassGenericPassword,
                        (__bridge id)kSecAttrService :KEYCHAIN_SERVICE,
+                        (__bridge id)kSecAttrAccessible :(__bridge id)kSecAttrAccessibleAfterFirstUnlock,
                        };
     }
     return self;
