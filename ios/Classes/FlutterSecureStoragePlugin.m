@@ -19,7 +19,6 @@ static NSString *const InvalidParameters = @"Invalid parameter's type";
         self.query = @{
                        (__bridge id)kSecClass :(__bridge id)kSecClassGenericPassword,
                        (__bridge id)kSecAttrService :KEYCHAIN_SERVICE,
-                        (__bridge id)kSecAttrAccessible :(__bridge id)kSecAttrAccessibleAfterFirstUnlock,
                        };
     }
     return self;
@@ -84,6 +83,7 @@ static NSString *const InvalidParameters = @"Invalid parameter's type";
     }
     search[(__bridge id)kSecAttrAccount] = key;
     search[(__bridge id)kSecMatchLimit] = (__bridge id)kSecMatchLimitOne;
+    search[(__bridge id)kSecAttrAccessible] (__bridge id)kSecAttrAccessibleAfterFirstUnlock;
     
     OSStatus status;
     status = SecItemCopyMatching((__bridge CFDictionaryRef)search, NULL);
@@ -123,6 +123,8 @@ static NSString *const InvalidParameters = @"Invalid parameter's type";
     if (status == noErr){
         NSData *data = (__bridge NSData*)resultData;
         value = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    } else {
+        NSLog(@"SecItemCopyMatching status = %d", status);
     }
     
     return value;
