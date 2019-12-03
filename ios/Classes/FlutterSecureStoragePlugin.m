@@ -83,14 +83,16 @@ static NSString *const InvalidParameters = @"Invalid parameter's type";
     }
     search[(__bridge id)kSecAttrAccount] = key;
     search[(__bridge id)kSecMatchLimit] = (__bridge id)kSecMatchLimitOne;
-    search[(__bridge id)kSecAttrAccessible] = (__bridge id)kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly;
     
     OSStatus status;
     status = SecItemCopyMatching((__bridge CFDictionaryRef)search, NULL);
     if (status == noErr){
         search[(__bridge id)kSecMatchLimit] = nil;
         
-        NSDictionary *update = @{(__bridge id)kSecValueData: [value dataUsingEncoding:NSUTF8StringEncoding]};
+        NSDictionary *update = @{
+            (__bridge id)kSecValueData: [value dataUsingEncoding:NSUTF8StringEncoding], 
+            (__bridge id)kSecAttrAccessible: (__bridge id)kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
+        };
         
         status = SecItemUpdate((__bridge CFDictionaryRef)search, (__bridge CFDictionaryRef)update);
         if (status != noErr){
@@ -99,6 +101,7 @@ static NSString *const InvalidParameters = @"Invalid parameter's type";
     }else{
         search[(__bridge id)kSecValueData] = [value dataUsingEncoding:NSUTF8StringEncoding];
         search[(__bridge id)kSecMatchLimit] = nil;
+        search[(__bridge id)kSecAttrAccessible] = (__bridge id)kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly;
         
         status = SecItemAdd((__bridge CFDictionaryRef)search, NULL);
         if (status != noErr){
